@@ -1,0 +1,1 @@
+# svsdk-android-non-root-demo
