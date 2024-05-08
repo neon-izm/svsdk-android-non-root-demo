@@ -1,10 +1,13 @@
 package org.xvisio.xvsdk;
 
+import static android.content.Context.RECEIVER_EXPORTED;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -68,9 +71,17 @@ class Enumerator {
         mListener = listener;
         mContext = context;
 
-        context.registerReceiver(mBroadcastReceiver, new IntentFilter(UsbUtilities.ACTION_USB_PERMISSION));
-        context.registerReceiver(mBroadcastReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED));
-        context.registerReceiver(mBroadcastReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(mBroadcastReceiver, new IntentFilter(UsbUtilities.ACTION_USB_PERMISSION),RECEIVER_EXPORTED);
+            context.registerReceiver(mBroadcastReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED),RECEIVER_EXPORTED);
+            context.registerReceiver(mBroadcastReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED),RECEIVER_EXPORTED);
+
+        }else {
+            context.registerReceiver(mBroadcastReceiver, new IntentFilter(UsbUtilities.ACTION_USB_PERMISSION));
+            context.registerReceiver(mBroadcastReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED));
+            context.registerReceiver(mBroadcastReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED));
+        }
 
         onDeviceAttach(context);
     }

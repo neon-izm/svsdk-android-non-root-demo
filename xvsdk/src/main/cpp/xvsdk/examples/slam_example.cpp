@@ -91,6 +91,10 @@ int main( int /*argc*/, char* /*argv*/[] )
 
             // it is also possible to make prediction and to get the pose 30 ms in the future:
             xv::Pose pose30ms;
+
+            device->slam()->registerLostCallback([](){
+                std::cout << "SLAM lost" << std::endl;
+            });
             device->slam()->getPose(pose30ms, 0.030);
 
             stereoImageMtx.lock();

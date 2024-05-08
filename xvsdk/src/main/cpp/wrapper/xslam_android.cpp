@@ -213,14 +213,17 @@ void onSlamCallback(xv::Pose const &pose) {
     }
 
     if (s_poseCallback) {
-        auto pitchYawRoll = xv::rotationToPitchYawRoll(pose.rotation());
+        auto quatXyzw = xv::rotationToQuaternion(pose.rotation());
+        auto confidence= pose.confidence();
         jniEnv->CallStaticVoidMethod(s_XCameraClass, s_poseCallback,
                                      static_cast<double>(pose.x()),
                                      static_cast<double>(pose.y()),
                                      static_cast<double>(pose.z()),
-                                     static_cast<double>(pitchYawRoll[0]*180/M_PI),
-                                     static_cast<double>(pitchYawRoll[1]*180/M_PI),
-                                     static_cast<double>(pitchYawRoll[2]*180/M_PI));
+                                     static_cast<double>(quatXyzw[0]),
+                                     static_cast<double>(quatXyzw[1]),
+                                     static_cast<double>(quatXyzw[2]),
+                                     static_cast<double>(quatXyzw[3]),
+                                     static_cast<double>(confidence));
     }
 }
 
@@ -653,7 +656,7 @@ Java_org_xvisio_xvsdk_XCamera_initCallbacks(JNIEnv *env, jclass type) {
     s_sgbmCallback = env->GetStaticMethodID(s_XCameraClass, "sgbmCallback", "(II[I)V");
     s_rgbCallback = env->GetStaticMethodID(s_XCameraClass, "rgbCallback", "(II[I)V");
     s_rgbFpsCallback = env->GetStaticMethodID(s_XCameraClass, "rgbFpsCallback", "(I)V");
-    s_poseCallback = env->GetStaticMethodID(s_XCameraClass, "poseCallback", "(DDDDDD)V");
+    s_poseCallback = env->GetStaticMethodID(s_XCameraClass, "poseCallback", "(DDDDDDDD)V");
 }
 
 extern "C" JNIEXPORT void JNICALL

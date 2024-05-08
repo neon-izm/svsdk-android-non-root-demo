@@ -30,7 +30,7 @@ public class XCamera extends XVisioClass {
     private static final int PERMISSIONS_REQUEST_CAMERA = 0;
 
     public XCamera() {
-        Log.d(TAG, "Creation");
+        Log.w(TAG, "XCamera Creation");
     }
 
     private Context mContext;
@@ -244,9 +244,9 @@ public class XCamera extends XVisioClass {
 
     private static native void stopSgbmStream();
 
-    public static void poseCallback(double x, double y, double z, double pitch, double yaw, double roll) {
+    public static void poseCallback(double x, double y, double z, double quatX, double quatY, double quatZ,double quatW,  double confidence) {
         if (mPoseListener != null) {
-            mPoseListener.onPose(x, y, z, pitch, yaw, roll);
+            mPoseListener.onPose(x, y, z, quatX,quatY,quatZ,quatW,confidence);
         }
     }
 
